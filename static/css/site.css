@@ -50,8 +50,22 @@ header nav.navbar.navbar-inverse ul.navbar-nav li.nav-item a.nav-link:active {
   margin-bottom: 20px;
 }
 
+footer {
+  margin-top: 2rem;
+}
+
 footer .navbar {
   font-size: 0.8rem;
   padding-top: 0.3rem;
   padding-bottom: 0.3rem;
+}
+
+
+.highlight {
+  background-color: #f7f7f9;
+  margin-bottom: 1rem;
+}
+
+.highlight pre {
+  margin-bottom: 0;
 }

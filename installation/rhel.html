@@ -1,0 +1,228 @@
+---
+layout: default
+title: Installation Guides
+permalink: /installation/rhel/
+---
+
+<div class="row">
+  <div class="col-lg-10 offset-lg-1 col-md-12">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{{ '/' | prepend: site.baseurl | prepend: site.url }}"><span class="fa fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">
+        <a href="{{ '/installation/' | prepend: site.baseurl | prepend: site.url }}">Installation Guides</a>
+      </li>
+      <li class="breadcrumb-item active">RHEL 7.3</li>
+    </ol>
+    <h1>Installation Guide for Red Hat Enterprise Linux 7.3</h1>
+    <hr class="mt-0 mb-4">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card card-inverse bg-primary mb-3">
+          <div class="card-header">
+            Table of Contents
+          </div>
+          <div class="list-group list-group-flush">
+            <a href="#overview" class="list-group-item list-group-item-action">Overview</a>
+            <a href="#basic-setup" class="list-group-item list-group-item-action">Basic Setup</a>
+            <a href="#postgresql" class="list-group-item list-group-item-action">PostgreSQL Server</a>
+            <a href="#python-virtualenv" class="list-group-item list-group-item-action">Python Virtual Environment</a>
+            <a href="#" class="list-group-item list-group-item-action">VALUE Configuration</a>
+            <a href="#nginx" class="list-group-item list-group-item-action">NGINX</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <article>
+          <section>
+            <h2 id="overview">Overview</h2>
+            <p>
+              This article describes the instructions to install the VALUE tool using a Red Hat Enterprise Linux 7.3
+              server.
+              The following resources and applications will be installed in the server:
+            </p>
+            <ul>
+              <li>PostgreSQL Server 9.6</li>
+              <li>NGINX </li>
+            </ul>
+          </section>
+          <hr class="my-4">
+          <section>
+            <h2 id="basic-setup">Basic Setup</h2>
+            <p>First, let's install all the needed resources and applications. Get started by installing <code>git</code>, <code>gcc</code> and <code>python-virtualenv</code>. Everything should be available in the <code>yum</code> repository.</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo yum -y install git gcc python-virtualenv</code></pre>
+              </div>
+            </div>
+
+            <p>Create a system user for the application:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo groupadd --system value
+sudo useradd --system --gid value --shell /bin/bash --home /opt/value value</code></pre>
+              </div>
+            </div>
+
+            <p>Create the VALUE tool home inside <code>/opt</code>:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo mkdir /opt/value</code></pre>
+              </div>
+            </div>
+
+            <p>Give the permissions to the <code>value</code> user:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo chown value:value /opt/value</code></pre>
+              </div>
+            </div>
+
+          </section>
+          <hr class="my-4">
+          <section>
+            <h2 id="postgresql">PostgreSQL Server</h2>
+            <p>Now install <code>PostgreSQL 9.6</code> server and development tools:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo yum -y install https://yum.postgresql.org/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
+sudo yum -y install postgresql96-server postgresql96-contrib postgresql96-devel</code></pre>
+              </div>
+            </div>
+
+            <p>Initialize the database:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo /usr/pgsql-9.6/bin/postgresql96-setup initdb</code></pre>
+              </div>
+            </div>
+
+            <p>Start and enable the <code>PostgreSQL 9.6</code> service:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo systemctl start postgresql-9.6
+sudo systemctl enable postgresql-9.6</code></pre>
+              </div>
+            </div>
+
+            <p>Log in with the <code>postgres</code> user:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo su - postgres</code></pre>
+              </div>
+            </div>
+
+            <p>Create a database user, set a password (save it for later) and create a database for the VALUE tool:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>createuser u_value
+psql -c "ALTER USER u_value WITH PASSWORD '123';"
+createdb --owner u_value value</code></pre>
+              </div>
+            </div>
+
+            <p>Now we have to update the authentication method of the database user in the file <code>pg_hba.conf</code>:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>vi /var/lib/pgsql/9.6/data/pg_hba.conf</code></pre>
+              </div>
+            </div>
+
+            <p>Go to the bottom of the file, find this snippet:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code># TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     peer
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            ident
+# IPv6 local connections:
+host    all             all             ::1/128                 ident
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+#local   replication     postgres                                peer
+#host    replication     postgres        127.0.0.1/32            ident
+#host    replication     postgres        ::1/128                 ident</code></pre>
+              </div>
+            </div>
+
+            <p>Change the method from <code>ident</code> to <code>md5</code>:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code># TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     peer
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            <span class="text-primary">md5</span>
+# IPv6 local connections:
+host    all             all             ::1/128                 <span class="text-primary">md5</span>
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+#local   replication     postgres                                peer
+#host    replication     postgres        127.0.0.1/32            ident
+#host    replication     postgres        ::1/128                 ident</code></pre>
+              </div>
+            </div>
+
+            <p>Save the file and exit.</p>
+
+            <p>Now, log out from the <code>postgres</code> session:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>exit</code></pre>
+              </div>
+            </div>
+
+            <p>Restart the <code>PostgreSQL 9.6</code> server:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo systemctl restart postgresql-9.6</code></pre>
+              </div>
+            </div>
+
+          </section>
+          <hr>
+          <section>
+            <h2 id="python-virtualenv">Python Virtual Environment</h2>
+            <p>First, log in with the system <code>value</code> user:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo su - value</code></pre>
+              </div>
+            </div>
+
+            <p>Start a new <code>python-virtualenv</code> inside the <code>/opt/value</code> directory:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>sudo virtualenv venv</code></pre>
+              </div>
+            </div>
+
+            <p>Create a few directories that will be used for the application:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>mkdir logs media run</code></pre>
+              </div>
+            </div>
+
+            <p>Clone the VALUE tool repository or extract the <code>value-master.zip</code> file inside the <code>/opt/value</code> directory:</p>
+            <div class="card highlight">
+              <div class="card-block">
+                <pre><code>git clone git@github.com:M3SOulu/value.git</code></pre>
+              </div>
+            </div>
+
+          </section>
+          <hr>
+          <section>
+            <h2 id="nginx">NGINX</h2>
+            <p>The application must be served behind a proxy server.</p>
+          </section>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>
