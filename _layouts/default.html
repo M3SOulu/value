@@ -2,23 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>VALUE Docs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
   <meta name="author" content="Vitor Freitas">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
-  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="{{ '/static/css/bootstrap.min.css' | prepend: site.baseurl | prepend: site.url }}">
+  <link rel="stylesheet" href="{{ '/static/css/font-awesome.min.css' | prepend: site.baseurl | prepend: site.url }}">
+  <link rel="stylesheet" href="{{ '/static/css/site.css' | prepend: site.baseurl | prepend: site.url }}">
+  <link rel="icon" type="image/png" href="{{ '/static/images/favicon.png' | prepend: site.baseurl | prepend: site.url }}">
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
 </head>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="one-half column" style="margin-top: 25%">
-        {{ content }}
+  <header>
+    <nav class="navbar navbar-toggleable-md navbar-inverse" style="background-color:#ed4b6f;">
+      <div class="container">
+        <button class="navbar-toggler navbar-toggler-right"
+                type="button"
+                data-toggle="collapse"
+                data-target="#mainMenu"
+                aria-controls="mainMenu"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="{{ '/' | prepend: site.baseurl | prepend: site.url }}">VALUE Documentation</a>
+        <div class="collapse navbar-collapse" id="mainMenu">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ '/releases/' | prepend: site.baseurl | prepend: site.url }}">Release Notes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ '/installation/' | prepend: site.baseurl | prepend: site.url }}">Installation Guides</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ '/integrations/' | prepend: site.baseurl | prepend: site.url }}">Integrations</a>
+            </li>
+          </ul>
+          <span class="navbar-text">
+            v1.5.0
+          </span>
+        </div>
       </div>
-    </div>
+    </nav>
+  </header>
+  <div class="container">
+    {{ content }}
   </div>
+  <footer>
+    <nav class="navbar navbar-toggleable-sm fixed-bottom navbar-light bg-faded">
+      <div class="container">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="http://valueproject.fi/" target="_blank">Value Project</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="http://www.oulu.fi/" target="_blank">University of Oulu</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="http://www.fidipro.fi/" target="_blank">FiDiPro</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="http://www.tekes.fi/" target="_blank">Tekes</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </footer>
 </body>
 </html>
