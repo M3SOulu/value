@@ -4,135 +4,139 @@ title: Installation Guides
 permalink: /installation/rhel/
 ---
 
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="{{ '/' | prepend: site.baseurl | prepend: site.url }}"><span class="fa fa-home"></span></a>
+  </li>
+  <li class="breadcrumb-item">
+    <a href="{{ '/installation/' | prepend: site.baseurl | prepend: site.url }}">Installation Guides</a>
+  </li>
+  <li class="breadcrumb-item active">RHEL 7.3</li>
+</ol>
+<h1>Installation Guide for Red Hat Enterprise Linux 7.3</h1>
+<hr class="mt-0 mb-4">
 <div class="row">
-  <div class="col-lg-10 offset-lg-1 col-md-12">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item">
-        <a href="{{ '/' | prepend: site.baseurl | prepend: site.url }}"><span class="fa fa-home"></span></a>
-      </li>
-      <li class="breadcrumb-item">
-        <a href="{{ '/installation/' | prepend: site.baseurl | prepend: site.url }}">Installation Guides</a>
-      </li>
-      <li class="breadcrumb-item active">RHEL 7.3</li>
-    </ol>
-    <h1>Installation Guide for Red Hat Enterprise Linux 7.3</h1>
-    <hr class="mt-0 mb-4">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card card-inverse bg-primary mb-3">
-          <div class="card-header">
-            Table of Contents
-          </div>
-          <div class="list-group list-group-flush">
-            <a href="#overview" class="list-group-item list-group-item-action">Overview</a>
-            <a href="#basic-setup" class="list-group-item list-group-item-action">Basic Setup</a>
-            <a href="#postgresql" class="list-group-item list-group-item-action">PostgreSQL Server</a>
-            <a href="#python-virtualenv" class="list-group-item list-group-item-action">Python Virtual Environment</a>
-            <a href="#" class="list-group-item list-group-item-action">VALUE Configuration</a>
-            <a href="#nginx" class="list-group-item list-group-item-action">NGINX</a>
+  <div class="col-lg-3 col-md-4">
+    <div class="card card-inverse bg-primary mb-3">
+      <div class="card-header">
+        Table of Contents
+      </div>
+      <div class="list-group list-group-flush">
+        <a href="#overview" class="list-group-item list-group-item-action">Overview</a>
+        <a href="#basic-setup" class="list-group-item list-group-item-action">Basic Setup</a>
+        <a href="#postgresql" class="list-group-item list-group-item-action">PostgreSQL Server</a>
+        <a href="#python-virtualenv" class="list-group-item list-group-item-action">Python Virtual Environment</a>
+        <a href="#nginx" class="list-group-item list-group-item-action">NGINX</a>
+        <a href="#conclusions" class="list-group-item list-group-item-action">Conclusions</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-9 col-md-8">
+    <article>
+      <section>
+        <h2 id="overview">Overview</h2>
+        <p>
+          This article describes the instructions to install the VALUE tool using a Red Hat Enterprise Linux 7.3
+          server.
+          The following resources and applications will be installed in the server:
+        </p>
+        <ul>
+          <li>git</li>
+          <li>gcc</li>
+          <li>python-virtualenv</li>
+          <li>postgresql96-server</li>
+          <li>postgresql96-contrib</li>
+          <li>postgresql96-devel</li>
+          <li>nginx</li>
+        </ul>
+        <p>The VALUE tool and its dependencies are installed isolated inside a Python Virtual Environment.</p>
+      </section>
+      <hr class="my-4">
+      <section>
+        <h2 id="basic-setup">Basic Setup</h2>
+        <p>First, let's install all the needed resources and applications. Get started by installing <code>git</code>, <code>gcc</code> and <code>python-virtualenv</code>. Everything should be available in the <code>yum</code> repository.</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo yum -y install git gcc python-virtualenv</code></pre>
           </div>
         </div>
-      </div>
-      <div class="col-md-8">
-        <article>
-          <section>
-            <h2 id="overview">Overview</h2>
-            <p>
-              This article describes the instructions to install the VALUE tool using a Red Hat Enterprise Linux 7.3
-              server.
-              The following resources and applications will be installed in the server:
-            </p>
-            <ul>
-              <li>PostgreSQL Server 9.6</li>
-              <li>NGINX </li>
-            </ul>
-          </section>
-          <hr class="my-4">
-          <section>
-            <h2 id="basic-setup">Basic Setup</h2>
-            <p>First, let's install all the needed resources and applications. Get started by installing <code>git</code>, <code>gcc</code> and <code>python-virtualenv</code>. Everything should be available in the <code>yum</code> repository.</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo yum -y install git gcc python-virtualenv</code></pre>
-              </div>
-            </div>
 
-            <p>Create a system user for the application:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo groupadd --system value
+        <p>Create a system user for the application:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo groupadd --system value
 sudo useradd --system --gid value --shell /bin/bash --home /opt/value value</code></pre>
-              </div>
-            </div>
+          </div>
+        </div>
 
-            <p>Create the VALUE tool home inside <code>/opt</code>:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo mkdir /opt/value</code></pre>
-              </div>
-            </div>
+        <p>Create the VALUE tool home inside <code>/opt</code>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo mkdir /opt/value</code></pre>
+          </div>
+        </div>
 
-            <p>Give the permissions to the <code>value</code> user:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo chown value:value /opt/value</code></pre>
-              </div>
-            </div>
+        <p>Give the permissions to the <code>value</code> user:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo chown value:value /opt/value</code></pre>
+          </div>
+        </div>
 
-          </section>
-          <hr class="my-4">
-          <section>
-            <h2 id="postgresql">PostgreSQL Server</h2>
-            <p>Now install <code>PostgreSQL 9.6</code> server and development tools:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo yum -y install https://yum.postgresql.org/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
+      </section>
+      <hr class="my-4">
+      <section>
+        <h2 id="postgresql">PostgreSQL Server</h2>
+        <p>Now install <code>PostgreSQL 9.6</code> server and development tools:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo yum -y install https://yum.postgresql.org/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
 sudo yum -y install postgresql96-server postgresql96-contrib postgresql96-devel</code></pre>
-              </div>
-            </div>
+          </div>
+        </div>
 
-            <p>Initialize the database:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo /usr/pgsql-9.6/bin/postgresql96-setup initdb</code></pre>
-              </div>
-            </div>
+        <p>Initialize the database:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo /usr/pgsql-9.6/bin/postgresql96-setup initdb</code></pre>
+          </div>
+        </div>
 
-            <p>Start and enable the <code>PostgreSQL 9.6</code> service:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo systemctl start postgresql-9.6
+        <p>Start and enable the <code>PostgreSQL 9.6</code> service:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo systemctl start postgresql-9.6
 sudo systemctl enable postgresql-9.6</code></pre>
-              </div>
-            </div>
+          </div>
+        </div>
 
-            <p>Log in with the <code>postgres</code> user:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo su - postgres</code></pre>
-              </div>
-            </div>
+        <p>Log in with the <code>postgres</code> user:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo su - postgres</code></pre>
+          </div>
+        </div>
 
-            <p>Create a database user, set a password (save it for later) and create a database for the VALUE tool:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>createuser u_value
+        <p>Create a database user, set a password (save it for later) and create a database for the VALUE tool:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>createuser u_value
 psql -c "ALTER USER u_value WITH PASSWORD '123';"
 createdb --owner u_value value</code></pre>
-              </div>
-            </div>
+          </div>
+        </div>
 
-            <p>Now we have to update the authentication method of the database user in the file <code>pg_hba.conf</code>:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>vi /var/lib/pgsql/9.6/data/pg_hba.conf</code></pre>
-              </div>
-            </div>
+        <p>Now we have to update the authentication method of the database user in the file <code>pg_hba.conf</code>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>vi /var/lib/pgsql/9.6/data/pg_hba.conf</code></pre>
+          </div>
+        </div>
 
-            <p>Go to the bottom of the file, find this snippet:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code># TYPE  DATABASE        USER            ADDRESS                 METHOD
+        <p>Go to the bottom of the file, find this snippet:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code># TYPE  DATABASE        USER            ADDRESS                 METHOD
 
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
@@ -145,13 +149,13 @@ host    all             all             ::1/128                 ident
 #local   replication     postgres                                peer
 #host    replication     postgres        127.0.0.1/32            ident
 #host    replication     postgres        ::1/128                 ident</code></pre>
-              </div>
-            </div>
+          </div>
+        </div>
 
-            <p>Change the method from <code>ident</code> to <code>md5</code>:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code># TYPE  DATABASE        USER            ADDRESS                 METHOD
+        <p>Change the method from <code>ident</code> to <code>md5</code>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code># TYPE  DATABASE        USER            ADDRESS                 METHOD
 
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
@@ -164,65 +168,296 @@ host    all             all             ::1/128                 <span class="tex
 #local   replication     postgres                                peer
 #host    replication     postgres        127.0.0.1/32            ident
 #host    replication     postgres        ::1/128                 ident</code></pre>
-              </div>
-            </div>
+          </div>
+        </div>
 
-            <p>Save the file and exit.</p>
+        <p>Save the file and exit.</p>
 
-            <p>Now, log out from the <code>postgres</code> session:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>exit</code></pre>
-              </div>
-            </div>
+        <p>Now, log out from the <code>postgres</code> session:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>exit</code></pre>
+          </div>
+        </div>
 
-            <p>Restart the <code>PostgreSQL 9.6</code> server:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo systemctl restart postgresql-9.6</code></pre>
-              </div>
-            </div>
+        <p>Restart the <code>PostgreSQL 9.6</code> server:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo systemctl restart postgresql-9.6</code></pre>
+          </div>
+        </div>
 
-          </section>
-          <hr>
-          <section>
-            <h2 id="python-virtualenv">Python Virtual Environment</h2>
-            <p>First, log in with the system <code>value</code> user:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo su - value</code></pre>
-              </div>
-            </div>
+      </section>
+      <hr class="my-4">
+      <section>
+        <h2 id="python-virtualenv">Python Virtual Environment</h2>
+        <p>First, log in with the system <code>value</code> user:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo su - value</code></pre>
+          </div>
+        </div>
 
-            <p>Start a new <code>python-virtualenv</code> inside the <code>/opt/value</code> directory:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>sudo virtualenv venv</code></pre>
-              </div>
-            </div>
+        <p>Start a new <code>python-virtualenv</code> inside the <code>/opt/value</code> directory:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>virtualenv venv</code></pre>
+          </div>
+        </div>
 
-            <p>Create a few directories that will be used for the application:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>mkdir logs media run</code></pre>
-              </div>
-            </div>
+        <p>Activate the <code>python-virtualenv</code>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>source venv/bin/activate</code></pre>
+          </div>
+        </div>
 
-            <p>Clone the VALUE tool repository or extract the <code>value-master.zip</code> file inside the <code>/opt/value</code> directory:</p>
-            <div class="card highlight">
-              <div class="card-block">
-                <pre><code>git clone git@github.com:M3SOulu/value.git</code></pre>
-              </div>
-            </div>
+        <p>Create a few directories that will be used for the application:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>mkdir logs media run</code></pre>
+          </div>
+        </div>
 
-          </section>
-          <hr>
-          <section>
-            <h2 id="nginx">NGINX</h2>
-            <p>The application must be served behind a proxy server.</p>
-          </section>
-        </article>
-      </div>
-    </div>
+        <p>Clone the VALUE tool repository or extract the <code>value-master.zip</code> file inside the <code>/opt/value</code> directory:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>git clone git@github.com:M3SOulu/value.git</code></pre>
+          </div>
+        </div>
+        <div class="alert alert-info" role="alert">
+          <span class="fa fa-info-circle"></span> To be able to clone the repository via ssh you will need to have a ssh key registered in our repository. For further instructions please contact <a href="mailto:vitor.freitas@oulu.fi" class="alert-link">vitor.freitas@oulu.fi</a>.
+          For instructions about how to generate a ssh key, please refer to <a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#platform-linux" target="_blank" class="alert-link">this article</a>.
+        </div>
+
+        <p>Now we have to install the Python dependencies. But first, add the <code>PostgreSQL</code> to the path. The <code>psycopg2</code> (driver) will need it to install:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>export PATH=$PATH:/usr/pgsql-9.6/bin/</code></pre>
+          </div>
+        </div>
+
+        <p>Upgrade the Python package manager:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>pip install pip --upgrade</code></pre>
+          </div>
+        </div>
+
+        <p>Install the dependencies:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>pip install -r value/requirements/production.txt</code></pre>
+          </div>
+        </div>
+
+        <p>Create a <code>.env</code> file inside <code>/opt/value/value</code>:
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>vi /opt/value/value/.env</code></pre>
+          </div>
+        </div>
+
+        <p>This file is responsible for storing environment specific settings, such as the server ip address/domain, passwords, keys and so on. Use the template below, changing the data highlited in <span class="text-primary">pink</span>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>SECRET_KEY=<span class="text-primary">LONG_RANDOM_STRING</span>
+ENVIRONMENT_NAME=<span class="text-primary">Company Name</span>
+DATABASE_URL=postgres://<span class="text-primary">DATABASE_USER</span>:<span class="text-primary">DATABASE_PASSWORD</span>@localhost:5432/value
+ALLOWED_HOSTS=<span class="text-primary">IP_ADDRESS_OR_DOMAIN_NAME</span></code></pre>
+          </div>
+        </div>
+
+        <p>Below an example of a <code>.env</code> file:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>SECRET_KEY=o#zu=h=v!kacci_c4to^1dh1dxj)9itt5=sl&xvdvjh9v!%-e#
+ENVIRONMENT_NAME=Value Demo Site
+DATABASE_URL=postgres://u_value:123@localhost:5432/value
+ALLOWED_HOSTS=demo.valueproject.fi</code></pre>
+          </div>
+        </div>
+
+        <div class="alert alert-info" role="alert">
+          <span class="fa fa-info-circle"></span> Tip: you can generate a 50 characters long random string running the following command:<br><code>python value/scripts/generate_secret_key.py</code>.
+        </div>
+
+        <p>Generate the database tables:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>python /opt/value/value/manage.py migrate</code></pre>
+          </div>
+        </div>
+
+        <p>Create an administrator user for the VALUE tool:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>python /opt/value/value/manage.py createsuperuser</code></pre>
+          </div>
+        </div>
+
+        <p>Collect the static assets (css, javascripts, images, etc) that will be served by NGINX:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>python /opt/value/value/manage.py collectstatic --noinput</code></pre>
+          </div>
+        </div>
+
+        <p>Next step now, create a systemd service file for <code>gunicorn</code> server, responsible for processing the VALUE tool requests.</p>
+
+        <p>First, exit the <code>value</code> user. Create the following systemd service file:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo vi /etc/systemd/system/gunicorn.service</code></pre>
+          </div>
+        </div>
+
+        <p>Insert the following in the file:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=value
+Group=value
+WorkingDirectory=/opt/value
+ExecStart=/opt/value/value/bin/gunicorn_start
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+          </div>
+        </div>
+
+        <p>Start the <code>gunicorn</code> systemd service we created and enable it so that it starts at boot:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo systemctl start gunicorn
+sudo systemctl enable gunicorn</code></pre>
+          </div>
+        </div>
+
+      </section>
+      <hr class="my-4">
+      <section>
+        <h2 id="nginx">NGINX</h2>
+        <p>The application must be served behind a proxy server. First, create a yum repo file:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo vi /etc/yum.repos.d/nginx.repo</code></pre>
+          </div>
+        </div>
+
+        <p>Add repository information:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/rhel/7/$basearch/
+gpgcheck=0
+enabled=1</code></pre>
+          </div>
+        </div>
+
+        <p>Save and exit.</p>
+
+        <p>Now install <code>nginx</code>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo yum -y install nginx</code></pre>
+          </div>
+        </div>
+
+        <p>Because of the security policies of the SELinux, we need to manually add the <code>httpd_t</code> to the list of permissive domains, run this command:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo semanage permissive -a httpd_t</code></pre>
+          </div>
+        </div>
+
+        <p>Now let's create a <code>.conf</code> file for the VALUE tool. Go to the <code>conf.d</code> directory:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>cd /etc/nginx/conf.d/</code></pre>
+          </div>
+        </div>
+
+        <p>Remove the <code>default.conf</code> file, and create a new one for the VALUE tool:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo rm default.conf
+sudo vi value.conf</code></pre>
+          </div>
+        </div>
+
+        <p>Inside of the <code>value.conf</code> file, insert the new server block:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>upstream app_server {
+    server unix:/opt/value/run/gunicorn.sock fail_timeout=0;
+}
+
+server {
+    listen 80;
+    server_name <span class="text-primary">IP_ADDRESS_OR_DOMAIN_NAME</span>;
+
+    keepalive_timeout 5;
+    client_max_body_size 4G;
+
+    access_log /opt/value/logs/nginx-access.log;
+    error_log /opt/value/logs/nginx-error.log;
+
+    location /static/ {
+        alias /opt/value/static/;
+    }
+
+    location /media/ {
+        alias /opt/value/media/;
+    }
+
+    location / {
+        try_files $uri @proxy_to_app;
+    }
+
+    location @proxy_to_app {
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $http_host;
+      proxy_redirect off;
+      proxy_pass http://app_server;
+    }
+}</code></pre>
+          </div>
+        </div>
+
+        <p>Test the <code>nginx.conf</code>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo nginx -t</code></pre>
+          </div>
+        </div>
+
+        <p>Start the <code>nginx</code> service and enable it so that it starts at boot:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo systemctl start nginx
+sudo systemctl enable nginx</code></pre>
+          </div>
+        </div>
+
+      </section>
+      <hr class="my-4">
+
+      <section>
+        <h2 id="conclusions">Conclusions</h2>
+        <p>You should now have access to the VALUE tool in your browser over your server's domain name or IP address.</p>
+        <p>As a final test, you can perform a server reboot and see if all the services will start up automatically:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo reboot</code></pre>
+          </div>
+        </div>
+      </section>
+    </article>
   </div>
 </div>
