@@ -8,3 +8,9 @@ markdown: kramdown
 exclude:
   - Gemfile
   - Gemfile.lock
+
+# Collections
+collections:
+  releases:
+    output: true
+    permalink: /releases/:title/
