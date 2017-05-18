@@ -16,24 +16,421 @@ permalink: /installation/ubuntu/
 <h1>Installation Guide for Ubuntu 16.04</h1>
 <hr class="mt-0 mb-4">
 <div class="row">
-  <div class="col-md-4">
-    <div class="list-group">
-      <a href="#" class="list-group-item active">
-        Basic Setup
-      </a>
-      <a href="#" class="list-group-item list-group-item-action">SSH Deploy Key</a>
-      <a href="#" class="list-group-item list-group-item-action">PostgreSQL</a>
-      <a href="#" class="list-group-item list-group-item-action">VALUE Configuration</a>
-      <a href="#" class="list-group-item list-group-item-action">NGINX</a>
-      <a href="#" class="list-group-item list-group-item-action">Supervisor</a>
+  <div class="col-lg-3 col-md-4">
+    <div class="card card-inverse bg-primary mb-3">
+      <div class="card-header">
+        Table of Contents
+      </div>
+      <div class="list-group list-group-flush">
+        <a href="#overview" class="list-group-item list-group-item-action">Overview</a>
+        <a href="#basic-setup" class="list-group-item list-group-item-action">Basic Setup</a>
+        <a href="#postgresql" class="list-group-item list-group-item-action">PostgreSQL Server</a>
+        <a href="#python-virtualenv" class="list-group-item list-group-item-action">Python Virtual Environment</a>
+        <a href="#supervisord" class="list-group-item list-group-item-action">Supervisord</a>
+        <a href="#nginx" class="list-group-item list-group-item-action">NGINX</a>
+        <a href="#conclusions" class="list-group-item list-group-item-action">Conclusions</a>
+      </div>
     </div>
   </div>
-  <div class="col-md-8">
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  <div class="col-lg-9 col-md-8">
+    <article>
+      <section>
+        <h2 id="overview">Overview</h2>
+        <p>
+          This article describes the instructions to install the VALUE tool using a Ubuntu 16.04
+          server.
+          The following resources and applications will be installed in the server:
+        </p>
+        <ul>
+          <li>python</li>
+          <li>libpq-dev</li>
+          <li>python-dev</li>
+          <li>libtiff5-dev</li>
+          <li>libjpeg8-dev</li>
+          <li>zlib1g-dev</li>
+          <li>libfreetype6-dev</li>
+          <li>liblcms2-dev</li>
+          <li>libwebp-dev</li>
+          <li>tcl8.6-dev</li>
+          <li>tk8.6-dev</li>
+          <li>python-tk</li>
+          <li>postgresql postgresql-contrib</li>
+          <li>python-virtualenv</li>
+          <li>supervisor</li>
+          <li>nginx</li>
+        </ul>
+        <p>The VALUE tool and its dependencies are installed isolated inside a Python Virtual Environment.</p>
+      </section>
+      <hr class="my-4">
+
+      <section>
+        <h2 id="basic-setup">Basic Setup</h2>
+
+        <p>First, upgrade the system packages:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo apt-get update
+sudo apt-get upgrade</code></pre>
+          </div>
+        </div>
+
+        <p>Install Python 2.7 and its development tools:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo apt-get install python libpq-dev python-dev</code></pre>
+          </div>
+        </div>
+
+        <p>Now install further packages that will be needed to compile the database conector driver:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo apt-get -y install libtiff5-dev libjpeg8-dev zlib1g-dev \
+    libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk</code></pre>
+          </div>
+        </div>
+
+        <p>Create a system user for the application:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo groupadd --system value
+sudo useradd --system --gid value --shell /bin/bash --home /opt/value value</code></pre>
+          </div>
+        </div>
+
+        <p>Create the VALUE tool home inside <code>/opt</code>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo mkdir /opt/value</code></pre>
+          </div>
+        </div>
+
+        <p>Give the permissions to the <code>value</code> user:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo chown value:value /opt/value</code></pre>
+          </div>
+        </div>
+
+      </section>
+      <hr class="my-4">
+      <section>
+        <h2 id="postgresql">PostgreSQL Server</h2>
+        <p>Now install <code>PostgreSQL 9.5</code> server and development tools:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo apt-get install postgresql postgresql-contrib</code></pre>
+          </div>
+        </div>
+
+        <p>Log in with the <code>postgres</code> user:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo su - postgres</code></pre>
+          </div>
+        </div>
+
+        <p>Create a database user, set a password (save it for later) and create a database for the VALUE tool:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>createuser u_value
+psql -c "ALTER USER u_value WITH PASSWORD '123';"
+createdb --owner u_value value</code></pre>
+          </div>
+        </div>
+
+        <p>Now, log out from the <code>postgres</code> session:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>exit</code></pre>
+          </div>
+        </div>
+
+      </section>
+      <hr class="my-4">
+      <section>
+        <h2 id="python-virtualenv">Python Virtual Environment</h2>
+        <p>First, install the <code>python-virtualenv</code> package:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo apt-get install python-virtualenv</code></pre>
+          </div>
+        </div>
+
+        <p>Log in with the system <code>value</code> user:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo su - value</code></pre>
+          </div>
+        </div>
+
+        <p>Start a new <code>python-virtualenv</code> inside the <code>/opt/value</code> directory:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>virtualenv venv</code></pre>
+          </div>
+        </div>
+
+        <p>Activate the <code>python-virtualenv</code>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>source venv/bin/activate</code></pre>
+          </div>
+        </div>
+
+        <p>Create a few directories that will be used for the application:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>mkdir logs media run</code></pre>
+          </div>
+        </div>
+
+        <p>Initialize the error log:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>touch logs/value-error.log</code></pre>
+          </div>
+        </div>
+
+        <p>Clone the VALUE tool repository or extract the <code>value-master.zip</code> file inside the <code>/opt/value</code> directory:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>git clone git@github.com:M3SOulu/value.git</code></pre>
+          </div>
+        </div>
+        <div class="alert alert-info" role="alert">
+          <span class="fa fa-info-circle"></span> To be able to clone the repository via ssh you will need to have a ssh key registered in our repository. For further instructions please contact <a href="mailto:vitor.freitas@oulu.fi" class="alert-link">vitor.freitas@oulu.fi</a>.
+          For instructions about how to generate a ssh key, please refer to <a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#platform-linux" target="_blank" class="alert-link">this article</a>.
+        </div>
+
+        <p>Install the dependencies:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>pip install -r value/requirements/production.txt</code></pre>
+          </div>
+        </div>
+
+        <p>Create a <code>.env</code> file inside <code>/opt/value/value</code>:
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>vi /opt/value/value/.env</code></pre>
+          </div>
+        </div>
+
+        <p>This file is responsible for storing environment specific settings, such as the server ip address/domain, passwords, keys and so on. Use the template below, changing the data highlited in <span class="text-primary">pink</span>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>SECRET_KEY=<span class="text-primary">LONG_RANDOM_STRING</span>
+ENVIRONMENT_NAME=<span class="text-primary">Company Name</span>
+DATABASE_URL=postgres://<span class="text-primary">DATABASE_USER</span>:<span class="text-primary">DATABASE_PASSWORD</span>@localhost:5432/value
+ALLOWED_HOSTS=<span class="text-primary">IP_ADDRESS_OR_DOMAIN_NAME</span></code></pre>
+          </div>
+        </div>
+
+        <p>Below an example of a <code>.env</code> file:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>SECRET_KEY=o#zu=h=v!kacci_c4to^1dh1dxj)9itt5=sl&xvdvjh9v!%-e#
+ENVIRONMENT_NAME=Value Demo Site
+DATABASE_URL=postgres://u_value:123@localhost:5432/value
+ALLOWED_HOSTS=demo.valueproject.fi</code></pre>
+          </div>
+        </div>
+
+        <div class="alert alert-info" role="alert">
+          <span class="fa fa-info-circle"></span> Tip: you can generate a 50 characters long random string running the following command:<br><code>python value/scripts/generate_secret_key.py</code>.
+        </div>
+
+        <p>Generate the database tables:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>python /opt/value/value/manage.py migrate</code></pre>
+          </div>
+        </div>
+
+        <p>Create an administrator user for the VALUE tool:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>python /opt/value/value/manage.py createsuperuser</code></pre>
+          </div>
+        </div>
+
+        <p>Collect the static assets (css, javascripts, images, etc) that will be served by NGINX:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>python /opt/value/value/manage.py collectstatic --noinput</code></pre>
+          </div>
+        </div>
+
+        <p>Exit the <code>value</code> user:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>exit</code></pre>
+          </div>
+        </div>
+
+      </section>
+      <hr class="my-4">
+      <section>
+        <h2 id="supervisord">Supervisord</h2>
+
+        <p>Install the <code>supervisor</code> package to manage the VALUE tool service:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo apt-get -y install supervisor</code></pre>
+          </div>
+        </div>
+
+        <p>Start and enable the Supervisor service:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo systemctl start supervisor
+sudo systemctl enable supervisor</code></pre>
+          </div>
+        </div>
+
+        <p>Create a <code>conf</code> file for the VALUE tool:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo vim /etc/supervisor/conf.d/value.conf</code></pre>
+          </div>
+        </div>
+
+        <p>Add the following instructions in the file, save and close:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>[program:value]
+command=/opt/value/value/bin/gunicorn_start
+user=value
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/opt/value/logs/value-error.log</code></pre>
+          </div>
+        </div>
+
+        <p>Reread Supervisor configuration files and make the new program available:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo supervisorctl reread
+sudo supervisorctl update</code></pre>
+          </div>
+        </div>
+
+        <p>Check the status of the VALUE tool:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo supervisorctl status value</code></pre>
+          </div>
+        </div>
+
+        <p>Sample output:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>value                            RUNNING   pid 1795, uptime 0:00:07</code></pre>
+          </div>
+        </div>
+
+        <p>
+          At this point, the VALUE tool is already up and running. Next step is configure the NGINX server to receive the
+          requests and pass it to the VALUE tool behind a proxy.
+        </p>
+
+
+
+      </section>
+      <hr class="my-4">
+      <section>
+        <h2 id="nginx">NGINX</h2>
+        <p>The application must be served behind a proxy server. First, create a yum repo file:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo apt-get -y install nginx</code></pre>
+          </div>
+        </div>
+
+        <p>
+          Add a new configuration file named <code>value</code> inside <code>/etc/nginx/sites-available/</code>.
+          Insert the new server block:
+        </p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>upstream app_server {
+    server unix:/opt/value/run/gunicorn.sock fail_timeout=0;
+}
+
+server {
+    listen 80;
+    server_name <span class="text-primary">IP_ADDRESS_OR_DOMAIN_NAME</span>;
+
+    keepalive_timeout 5;
+    client_max_body_size 4G;
+
+    access_log /opt/value/logs/nginx-access.log;
+    error_log /opt/value/logs/nginx-error.log;
+
+    location /static/ {
+        alias /opt/value/static/;
+    }
+
+    location /media/ {
+        alias /opt/value/media/;
+    }
+
+    location / {
+        try_files $uri @proxy_to_app;
+    }
+
+    location @proxy_to_app {
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $http_host;
+      proxy_redirect off;
+      proxy_pass http://app_server;
+    }
+}</code></pre>
+          </div>
+        </div>
+
+        <p>Create a symbolic link to the <code>sites-enabled</code> directory:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo ln -s /etc/nginx/sites-available/value /etc/nginx/sites-enabled/value</code></pre>
+          </div>
+        </div>
+
+        <p>Test the <code>nginx.conf</code>:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo nginx -t</code></pre>
+          </div>
+        </div>
+
+        <p>Remove <code>nginx</code> default website:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo rm /etc/nginx/sites-enabled/default</code></pre>
+          </div>
+        </div>
+
+        <p>Restart the <code>nginx</code> service:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo service nginx restart</code></pre>
+          </div>
+        </div>
+
+      </section>
+      <hr class="my-4">
+
+      <section>
+        <h2 id="conclusions">Conclusions</h2>
+        <p>You should now have access to the VALUE tool in your browser over your server's domain name or IP address.</p>
+        <p>As a final test, you can perform a server reboot and see if all the services will start up automatically:</p>
+        <div class="card highlight">
+          <div class="card-block">
+            <pre><code>sudo reboot</code></pre>
+          </div>
+        </div>
+      </section>
+    </article>
   </div>
 </div>
