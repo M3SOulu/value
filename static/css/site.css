@@ -1,3 +1,20 @@
+html,
+body {
+  height: 100%;
+}
+
+.wrapper {
+  position: relative;
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -50px;
+}
+
+.push {
+  height: 50px;
+}
+
 header {
   margin-bottom: 2rem;
 }
@@ -12,8 +29,21 @@ header nav.navbar.navbar-inverse ul.navbar-nav li.nav-item a.nav-link:active {
   color: rgba(255,255,255,1);
 }
 
-.home-menu {
+footer {
+  height: 50px;
+  padding-top: 12px;
+  position: relative;
+}
 
+footer a {
+  font-size: 0.8rem;
+  display: inline!important;
+  color: rgba(0,0,0,.5);
+}
+
+footer a:hover,
+footer a:active {
+  color: rgba(0,0,0,.75)
 }
 
 .home-menu [class^='col-'] {
@@ -50,17 +80,6 @@ header nav.navbar.navbar-inverse ul.navbar-nav li.nav-item a.nav-link:active {
   margin-bottom: 20px;
 }
 
-footer {
-  margin-top: 2rem;
-}
-
-footer .navbar {
-  font-size: 0.8rem;
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
-}
-
-
 .highlight {
   background-color: #f7f7f9;
   margin-bottom: 1rem;
@@ -68,4 +87,15 @@ footer .navbar {
 
 .highlight pre {
   margin-bottom: 0;
+}
+
+/* krmarkdown */
+pre.highlight {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 1.25rem;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: .25rem;
 }

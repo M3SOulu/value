@@ -1,0 +1,10 @@
+## Macro title: Value Summary
+## Macro has a body: N
+##
+## Developed by: Vitor Freitas
+## Date created: 05/05/2017
+## Installed by: Vitor Freitas
+
+## @param IssueId:title=IssueId|type=string|required=true|desc=JIRA Issue ID
+
+<iframe style="border:0;padding:0;margin:0;" width="100%" height="20" src="http://127.0.0.1:8000/api/summary/?id=$paramIssueId"></iframe>

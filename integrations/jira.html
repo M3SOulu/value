@@ -13,5 +13,97 @@ permalink: /integrations/jira/
   </li>
   <li class="breadcrumb-item active">JIRA</li>
 </ol>
-<h1>Integration with JIRA</h1>
+<h1>Integrating with JIRA</h1>
 <hr class="mt-0 mb-4">
+
+
+<div class="row">
+  <div class="col-lg-3 col-md-4">
+    <div class="card card-inverse bg-primary mb-3">
+      <div class="card-header">
+        Table of Contents
+      </div>
+      <div class="list-group list-group-flush">
+        <a href="#app-user" class="list-group-item list-group-item-action">Creating an Application User</a>
+        <a href="#custom-fields" class="list-group-item list-group-item-action">Creating Custom Fields</a>
+        <a href="#rest-api" class="list-group-item list-group-item-action">Connecting with JIRA's REST API</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-9 col-md-8">
+    <article>
+      <section>
+        <h2 id="app-user">Creating an Application User</h2>
+        <p>
+          To perform this action you will need to be signed in with a JIRA administrator user. In JIRA's
+          administration site, open the <strong>User management</strong> tab and create a new user to be used by the VALUE tool.
+        </p>
+      </section>
+
+      <hr class="my-4">
+
+      <section>
+        <h2 id="custom-fields">Creating Custom Fields</h2>
+        <p>
+          Still in the JIRA's administration site, access the <strong>Issues</strong> tab and open the
+          <strong>Custom fields</strong> screen. Create the three custom fields described in Table below:
+        </p>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Field name</th>
+              <th>Description</th>
+              <th>Field type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Value Ranking</td>
+              <td>Provide the value ranking from the VALUE tool</td>
+              <td>Number Field</td>
+            </tr>
+            <tr>
+              <td>Value Summary</td>
+              <td>Provide the group assessment summary from the VALUE tool</td>
+              <td>Text Field (multi-line)</td>
+            </tr>
+            <tr>
+              <td>Value URL</td>
+              <td>URL of the issue on the VALUE tool</td>
+              <td>URL Field</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          In the <strong>Issues</strong> tab, access the <strong>Field configurations</strong> and click on <strong>configure</strong>.
+          Set the renderer of the <strong>Value Summary</strong> field to <strong>Wiki Style Renderer</strong>.
+        </p>
+      </section>
+
+      <hr class="my-4">
+
+      <section>
+        <h2 id="rest-api">Connecting with JIRA's REST API</h2>
+        <p>To perform this task you will need access to the application server where the VALUE tool is deployed.</p>
+
+        <p>
+          Edit the <code>.env</code> file located in the project root (<code>/webapps/value_tool/value/.env</code>).
+          Add the following environment variables:
+        </p>
+
+        <ul>
+          <li><strong>JIRA_URL:</strong> base URL of the JIRA installation</li>
+          <li><strong>JIRA_USERNAME:</strong> username defined in the first section of this guide</li>
+          <li><strong>JIRA_PASSWORD:</strong> password defined in the first section of this guide</li>
+        </ul>
+
+        <p>
+          In the VALUE tool, open the <strong>Application settings</strong> screen and click on the
+          <strong>JIRA integration</strong> menu. Check the <strong>Enable JIRA integration</strong> option and inform
+          the IDs of the JIRA custom fields created in the previous sections.
+        </p>
+      </section>
+    </article>
+  </div>
+</div>

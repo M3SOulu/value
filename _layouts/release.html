@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<div class="row">
+  <div class="col-lg-8 offset-lg-2">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{{ '/' | prepend: site.baseurl | prepend: site.url }}"><span class="fa fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">
+        <a href="{{ '/releases/' | prepend: site.baseurl | prepend: site.url }}">Release Notes</a>
+      </li>
+      <li class="breadcrumb-item active">{{ page.version }}</li>
+    </ol>
+    <h1>{{ page.title }}</h1>
+    <hr class="mt-0 mb-4">
+    <p class="text-muted mb-4">
+      <span class="mr-3">
+        <span class="fa fa-calendar"></span>
+        {{ page.date | date: "%B %d, %Y" }}
+      </span>
+      <span>
+        <span class="fa fa-user-circle"></span>
+        {{ page.author }}
+      </span>
+    </p>
+
+    {{ content }}
+  </div>
+</div>

@@ -12,3 +12,11 @@ permalink: /releases/
 </ol>
 <h1>Release Notes</h1>
 <hr class="mt-0 mb-4">
+
+{% assign releases = (site.releases | sort: 'date') | reverse %}
+
+<ul>
+  {% for release in releases %}
+    <li><a href="{{ release.url }}">{{ release.title }}</a></li>
+  {% endfor %}
+</ul>

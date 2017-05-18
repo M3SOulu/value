@@ -13,60 +13,51 @@
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
 </head>
 <body>
-  <header>
-    <nav class="navbar navbar-toggleable-md navbar-inverse" style="background-color:#ed4b6f;">
-      <div class="container">
-        <button class="navbar-toggler navbar-toggler-right"
-                type="button"
-                data-toggle="collapse"
-                data-target="#mainMenu"
-                aria-controls="mainMenu"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <a class="navbar-brand" href="{{ '/' | prepend: site.baseurl | prepend: site.url }}">VALUE Documentation</a>
-        <div class="collapse navbar-collapse" id="mainMenu">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{{ '/releases/' | prepend: site.baseurl | prepend: site.url }}">Release Notes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ '/installation/' | prepend: site.baseurl | prepend: site.url }}">Installation Guides</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ '/integrations/' | prepend: site.baseurl | prepend: site.url }}">Integrations</a>
-            </li>
-          </ul>
-          <span class="navbar-text">
-            v1.5.0
-          </span>
+  <div class="wrapper">
+    <header>
+      <nav class="navbar navbar-toggleable-md navbar-inverse" style="background-color:#ed4b6f;">
+        <div class="container">
+          <button class="navbar-toggler navbar-toggler-right"
+                  type="button"
+                  data-toggle="collapse"
+                  data-target="#mainMenu"
+                  aria-controls="mainMenu"
+                  aria-expanded="false"
+                  aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a class="navbar-brand" href="{{ '/' | prepend: site.baseurl | prepend: site.url }}">VALUE Documentation</a>
+          <div class="collapse navbar-collapse" id="mainMenu">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{{ '/releases/' | prepend: site.baseurl | prepend: site.url }}">Release Notes</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ '/installation/' | prepend: site.baseurl | prepend: site.url }}">Installation Guides</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ '/integrations/' | prepend: site.baseurl | prepend: site.url }}">Integrations</a>
+              </li>
+            </ul>
+            <span class="navbar-text">
+              v1.5.0
+            </span>
+          </div>
         </div>
-      </div>
-    </nav>
-  </header>
-  <div class="container">
-    {{ content }}
+      </nav>
+    </header>
+    <div class="container">
+      {{ content }}
+    </div>
+    <div class="push"></div>
   </div>
-  <!--footer>
-    <nav class="navbar navbar-toggleable-sm fixed-bottom navbar-light bg-faded">
-      <div class="container">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="http://valueproject.fi/" target="_blank">Value Project</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="http://www.oulu.fi/" target="_blank">University of Oulu</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="http://www.fidipro.fi/" target="_blank">FiDiPro</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="http://www.tekes.fi/" target="_blank">Tekes</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </footer-->
+  <footer class="bg-faded">
+    <div class="container">
+      <a class="nav-link" href="http://valueproject.fi/" target="_blank">Value Project</a>
+      <a class="nav-link" href="http://www.oulu.fi/" target="_blank">University of Oulu</a>
+      <a class="nav-link" href="http://www.fidipro.fi/" target="_blank">FiDiPro</a>
+      <a class="nav-link" href="http://www.tekes.fi/" target="_blank">Tekes</a>
+    </div>
+  </footer>
 </body>
 </html>

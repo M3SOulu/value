@@ -1,0 +1,128 @@
+---
+layout: default
+title: Integrations
+permalink: /integrations/confluence/
+---
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="{{ '/' | prepend: site.baseurl | prepend: site.url }}"><span class="fa fa-home"></span></a>
+  </li>
+  <li class="breadcrumb-item">
+    <a href="{{ '/integrations/' | prepend: site.baseurl | prepend: site.url }}">Integrations</a>
+  </li>
+  <li class="breadcrumb-item active">Confluence</li>
+</ol>
+<h1>Integrating with Confluence</h1>
+<hr class="mt-0 mb-4">
+
+
+<div class="row">
+  <div class="col-lg-3 col-md-4">
+    <div class="card card-inverse bg-primary mb-3">
+      <div class="card-header">
+        Table of Contents
+      </div>
+      <div class="list-group list-group-flush">
+        <a href="#introduction" class="list-group-item list-group-item-action">Introduction</a>
+        <a href="#value-charts-macro" class="list-group-item list-group-item-action">Value Charts Macro</a>
+        <a href="#value-summary-macro" class="list-group-item list-group-item-action">Value Summary Macro</a>
+        <a href="#resources" class="list-group-item list-group-item-action">Resources</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-9 col-md-8">
+    <article>
+      <section>
+        <h2 id="introduction">Introduction</h2>
+        <p>Inside the <strong>Confluence administration</strong>, access the <strong>User Macros</strong> screen to create the following macros described below.</p>
+      </section>
+      <hr class="my-4">
+
+      <section>
+        <h2 id="value-charts-macro">Value Charts Macro</h2>
+        <ul>
+          <li><strong>Macro Name:</strong> value_charts</li>
+          <li><strong>Macro Title:</strong> Value Charts</li>
+          <li><strong>Description:</strong> Renders a chart from the VALUE tool's dashboard</li>
+          <li><strong>Categories:</strong> Development</li>
+          <li><strong>Macro Body Processing:</strong> No macro body</li>
+        </ul>
+
+        <pre class="highlight"><code>## Macro title: Value Charts
+## Macro has a body: N
+##
+## Developed by: Vitor Freitas
+## Date created: 05/05/2017
+## Installed by: <span class="text-primary">INSTALLER_NAME</span>
+
+## @param ChartType:title=Chart Type|type=enum|
+enumValues=decision_items_overview,value_ranking,
+factors_comparison|default=red|desc=Choose a chart type
+## @param IssueId:title=Issue ID|type=string|
+desc=JIRA Issue ID
+## @param Width:title=Width|type=string|default=500|
+desc=Width of the chart
+## @param Height:title=Height|type=string|default=400|
+desc=Height of the chart
+
+&lt;iframe style="border:0;padding:0;margin:0;"
+width="$paramWidth" height="$paramHeight"
+src="https://<span class="text-primary">VALUE_TOOL_DOMAIN</span>/api/charts/?id=$paramIssueId&chartType=$paramChartType"&gt;
+&lt;/iframe&gt;</code></pre>
+
+        <p>Change the <span class="text-primary">INSTALLER_NAME</span> and <span class="text-primary">VALUE_TOOL_DOMAIN</span> markups with the correct values.</p>
+
+      </section>
+
+      <hr class="my-4">
+
+      <section>
+        <h2 id="value-summary-macro">Value Summary Macro</h2>
+        <ul>
+          <li><strong>Macro Name:</strong> value_summary</li>
+          <li><strong>Macro Title:</strong> Value Summary</li>
+          <li><strong>Description:</strong> Display the evaluation summary from the VALUE tool</li>
+          <li><strong>Categories:</strong> Development</li>
+          <li><strong>Macro Body Processing:</strong> No macro body</li>
+        </ul>
+        <pre class="highlight"><code>## Macro title: Value Summary
+## Macro has a body: N
+##
+## Developed by: Vitor Freitas
+## Date created: 05/05/2017
+## Installed by: <span class="text-primary">INSTALLER_NAME</span>
+
+## This is an example macro
+## @param IssueId:title=IssueId|type=string|
+required=true|desc=JIRA Issue ID
+
+&lt;iframe style="border:0;padding:0;margin:0;"
+width="100%" height="20"
+src="https://<span class="text-primary">VALUE_TOOL_DOMAIN</span>/api/summary/?id=$paramIssueId"&gt;&lt;/iframe&gt;</code></pre>
+
+        <p>Change the <span class="text-primary">INSTALLER_NAME</span> and <span class="text-primary">VALUE_TOOL_DOMAIN</span> markups with the correct values.</p>
+      </section>
+      <hr class="my-4">
+
+      <section>
+        <h2 id="resources">Resources</h2>
+
+        <p>Use the resources below to complete the Confluence User Macros installation.</p>
+        <strong>Value Summary</strong>
+
+        <ul>
+          <li><a href="{{ "/media/value_summary_icon.png" | prepend: site.baseurl }}" target="_blank"><span class="fa fa-file-image-o"></span> Macro Icon</a></li>
+          <li><a href="{{ "/media/value_summary_template.txt" | prepend: site.baseurl }}" target="_blank"><span class="fa fa-file-text-o"></span> Macro Template</a></li>
+        </ul>
+
+        <strong>Value Charts</strong>
+
+        <ul>
+          <li><a href="{{ "/media/value_charts_icon.png" | prepend: site.baseurl }}" target="_blank"><span class="fa fa-file-image-o"></span> Macro Icon</a></li>
+          <li><a href="{{ "/media/value_charts_template.txt" | prepend: site.baseurl }}" target="_blank"><span class="fa fa-file-text-o"></span> Macro Template</a></li>
+        </ul>
+      </section>
+    </article>
+  </div>
+</div>
