@@ -3,11 +3,13 @@
 ##
 ## Developed by: Vitor Freitas
 ## Date created: 05/05/2017
+## Date updated: 23/08/2017
 ## Installed by: Vitor Freitas
 
 ## @param ChartType:title=Chart Type|type=enum|enumValues=decision_items_overview,value_ranking,factors_comparison|default=red|desc=Choose a chart type
 ## @param IssueId:title=Issue ID|type=string|desc=JIRA Issue ID
+## @param MeetingId:title=Meeting ID|type=string|desc=VALUE Meeting ID
 ## @param Width:title=Width|type=string|default=500|desc=Width of the chart
 ## @param Height:title=Height|type=string|default=400|desc=Height of the chart
 
-<iframe style="border:0;padding:0;margin:0;" width="$paramWidth" height="$paramHeight" src="http://127.0.0.1:8000/api/charts/?id=$paramIssueId&chartType=$paramChartType"></iframe>
+<iframe style="border:0;padding:0;margin:0;" width="$paramWidth" height="$paramHeight" src="http://127.0.0.1:8000/api/charts/?id=$paramIssueId&meetingId=$paramMeetingId&chartType=$paramChartType"></iframe>

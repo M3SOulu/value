@@ -54,21 +54,18 @@ permalink: /integrations/confluence/
 ##
 ## Developed by: Vitor Freitas
 ## Date created: 05/05/2017
+## Date updated: 23/08/2017
 ## Installed by: <span class="text-primary">INSTALLER_NAME</span>
 
-## @param ChartType:title=Chart Type|type=enum|
-enumValues=decision_items_overview,value_ranking,
-factors_comparison|default=red|desc=Choose a chart type
-## @param IssueId:title=Issue ID|type=string|
-desc=JIRA Issue ID
-## @param Width:title=Width|type=string|default=500|
-desc=Width of the chart
-## @param Height:title=Height|type=string|default=400|
-desc=Height of the chart
+## @param ChartType:title=Chart Type|type=enum|enumValues=decision_items_overview,value_ranking,factors_comparison|default=red|desc=Choose a chart type
+## @param IssueId:title=Issue ID|type=string|desc=JIRA Issue ID
+## @param MeetingId:title=Meeting ID|type=string|desc=VALUE Meeting ID
+## @param Width:title=Width|type=string|default=500|desc=Width of the chart
+## @param Height:title=Height|type=string|default=400|desc=Height of the chart
 
 &lt;iframe style="border:0;padding:0;margin:0;"
 width="$paramWidth" height="$paramHeight"
-src="https://<span class="text-primary">VALUE_TOOL_DOMAIN</span>/api/charts/?id=$paramIssueId&chartType=$paramChartType"&gt;
+src="https://<span class="text-primary">VALUE_TOOL_DOMAIN</span>/api/charts/?id=$paramIssueId&meetingId=$paramMeetingId&chartType=$paramChartType"&gt;
 &lt;/iframe&gt;</code></pre>
 
         <p>Change the <span class="text-primary">INSTALLER_NAME</span> and <span class="text-primary">VALUE_TOOL_DOMAIN</span> markups with the correct values.</p>
@@ -91,15 +88,16 @@ src="https://<span class="text-primary">VALUE_TOOL_DOMAIN</span>/api/charts/?id=
 ##
 ## Developed by: Vitor Freitas
 ## Date created: 05/05/2017
+## Date updated: 23/08/2017
 ## Installed by: <span class="text-primary">INSTALLER_NAME</span>
 
 ## This is an example macro
-## @param IssueId:title=IssueId|type=string|
-required=true|desc=JIRA Issue ID
+## @param IssueId:title=IssueId|type=string|required=true|desc=JIRA Issue ID
+## @param MeetingId:title=Meeting ID|type=string|desc=VALUE Meeting ID
 
 &lt;iframe style="border:0;padding:0;margin:0;"
 width="100%" height="20"
-src="https://<span class="text-primary">VALUE_TOOL_DOMAIN</span>/api/summary/?id=$paramIssueId"&gt;&lt;/iframe&gt;</code></pre>
+src="https://<span class="text-primary">VALUE_TOOL_DOMAIN</span>/api/summary/?id=$paramIssueId&meetingId=$paramMeetingId"&gt;&lt;/iframe&gt;</code></pre>
 
         <p>Change the <span class="text-primary">INSTALLER_NAME</span> and <span class="text-primary">VALUE_TOOL_DOMAIN</span> markups with the correct values.</p>
       </section>
