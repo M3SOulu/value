@@ -369,7 +369,6 @@ def delete_decision_item(request, deliverable_id, decision_item_id):
 
 
 @login_required
-@user_is_stakeholder
 def details_decision_item(request, deliverable_id, decision_item_id):
     deliverable = get_object_or_404(Deliverable, pk=deliverable_id)
     decision_item = get_object_or_404(DecisionItem, pk=decision_item_id)
