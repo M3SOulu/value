@@ -60,7 +60,11 @@ def evaluation_options(evaluations, meeting_item, factor, measure, measure_value
         factor_name = u'{0}: <strong>{1}</strong>'.format(escape(factor.group.name), escape(factor.name))
 
     factor_description = _('No description')
-    if factor.description:
+    if meeting_item.meeting.is_survey:
+      if factor.description:
+        factor_description = escape(meeting_item.decision_item.description)
+    else: 
+      if factor.description:
         factor_description = escape(factor.description)
 
     html += u'''<td>

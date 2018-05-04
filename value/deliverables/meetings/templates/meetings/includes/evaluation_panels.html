@@ -9,13 +9,14 @@
         <table style="width: 100%">
           <body>
             <tr>
-              <td style="width: {% if measure_values.count > 5 %} 25% {% else %} 40% {% endif %};">
-                {% if meeting_item.meeting.is_survey %}
+              <td style="width: {% if measure_values.count > 5 %} 25% {% else %} 50% {% endif %};">
+                {% if not meeting_item.meeting.is_survey %}
                 <span class="pull-right" style="padding: 0 15px;">
                   {% display_info_button meeting_item.decision_item %}
                 </span>
-                {% endif %}
                 <a href="javascript:void(0);" class="btn-toggle">{{ meeting_item.decision_item.name }}</a>
+                {% endif %}
+                <strong>{{ meeting_item.decision_item.name }}</strong>
               </td>
               <td>
                 <div class="progress" style="margin-bottom: 0">
@@ -34,7 +35,11 @@
         <table class="table table-hover table-condensed table-evaluate" data-meeting-item-id="{{ meeting_item.pk }}">
           <thead>
             <tr>
-              <th style="width: {% if measure_values.count > 5 %} 25% {% else %} 50% {% endif %}">{% trans 'Value Factor' %}</th>
+              <th style="width: {% if measure_values.count > 5 %} 25% {% else %} 50% {% endif %}">
+              {% if not meeting_item.meeting.is_survey %}
+                {% trans 'Value Factor' %}
+              {% endif %}
+              </th>
               {% for measure_value in measure_values %}
                 <th class="text-center" style="width: {{ relative_col_size }}">{{ measure_value.description }}</th>
               {% endfor %}
