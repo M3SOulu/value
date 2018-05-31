@@ -11,9 +11,11 @@ from django.db import models, transaction
 from django.db.models import Count, Sum, Max
 from django.db.models.signals import m2m_changed
 from django.utils import timezone
+from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from jira import JIRA
+import markdown
 
 from value.application_settings.models import ApplicationSetting
 from value.factors.models import Factor
@@ -104,6 +106,9 @@ class Meeting(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_description_as_markdown(self):
+        return mark_safe(markdown.markdown(self.description, safe_mode='escape'))
 
     def is_ongoing(self):
         return self.status == Meeting.ONGOING
