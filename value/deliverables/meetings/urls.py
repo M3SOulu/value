@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^(?P<meeting_id>\d+)/progress/$', views.update_meeting_progress, name='update_meeting_progress'),
     url(r'^(?P<meeting_id>\d+)/rationales/$', views.rationales, name='rationales'),
     url(r'^(?P<meeting_id>\d+)/sync-jira/$', views.sync_jira, name='sync_jira'),
+    url(r'^(?P<meeting_id>\d+)/export/$', views.export_excel, name='export_excel'),
 
     # Evaluate URLs
     url(r'^(?P<meeting_id>\d+)/evaluate/$', views.evaluate, name='evaluate'),
