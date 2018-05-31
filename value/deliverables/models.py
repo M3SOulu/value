@@ -6,7 +6,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
+
+import markdown
 
 from value.application_settings.models import ApplicationSetting
 from value.factors.models import Factor
@@ -32,6 +35,9 @@ class Deliverable(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_description_as_markdown(self):
+        return mark_safe(markdown.markdown(self.description, safe_mode='escape'))
 
     def get_decision_items_fields(self):
         return DecisionItemLookup.get_visible_fields()

@@ -15,7 +15,9 @@
   {% include 'deliverables/includes/menu.html' with active='meetings' deliverable=deliverable %}
 
   {% if deliverable.description %}
-    <p class="lead">{{ deliverable.description|linebreaksbr }}</p>
+    <div class="lead">
+      {{ deliverable.get_description_as_markdown }}
+    </div>
   {% endif %}
 
   {% with has_meetings=deliverable.meeting_set.exists %}
