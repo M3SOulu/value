@@ -129,20 +129,20 @@
                 <tr>
                   <th>&nbsp;</th>
                   {% for meeting_stakeholder in stakeholders_agreement.meeting_stakeholders %}
-                    <th>{{ meeting_stakeholder.stakeholder.profile.get_display_name }}</th>
+                    <th>{{ meeting_stakeholder.profile.get_display_name }}</th>
                   {% endfor %}
                 </tr>
               </thead>
               <tbody>
                 {% for row in stakeholders_agreement.matrix_by_factors %}
                   <tr>
-                    <th>{{ row.0.stakeholder.profile.get_display_name }}</th>
+                    <th>{{ row.0.profile.get_display_name }}</th>
                     {% for col in row.1 %}
                       {% if forloop.counter > forloop.parentloop.counter %}
                         <td class="has-value compare-stakeholders"
                             style="text-align: center; color: #fff; background-color: {{ col.1|matrix_cell_color }} "
-                            data-stakeholder-one="{{ row.0.stakeholder.pk }}"
-                            data-stakeholder-two="{{ col.0.stakeholder.pk }}">
+                            data-stakeholder-one="{{ row.0.pk }}"
+                            data-stakeholder-two="{{ col.0.pk }}">
                           {{ col.1 }}%
                         </td>
                       {% else %}
@@ -162,14 +162,14 @@
                 <tr>
                   <th>&nbsp;</th>
                   {% for meeting_stakeholder in stakeholders_agreement.meeting_stakeholders %}
-                    <th>{{ meeting_stakeholder.stakeholder.profile.get_display_name }}</th>
+                    <th>{{ meeting_stakeholder.profile.get_display_name }}</th>
                   {% endfor %}
                 </tr>
               </thead>
               <tbody>
                 {% for row in stakeholders_agreement.matrix_by_items %}
                   <tr>
-                    <th>{{ row.0.stakeholder.profile.get_display_name }}</th>
+                    <th>{{ row.0.profile.get_display_name }}</th>
                     {% for col in row.1 %}
                       {% if forloop.counter > forloop.parentloop.counter %}
                         <td class="has-value" style="text-align: center; color: #fff; background-color: {{ col.1|matrix_cell_color }} ">{{ col.1 }}%</td>

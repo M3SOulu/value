@@ -99,7 +99,7 @@
                 <tr>
                   <th style="width: 15%">&nbsp;</th>
                   {% for meeting_stakeholder in stakeholders_agreement.meeting_stakeholders %}
-                    <th>{{ meeting_stakeholder.stakeholder.profile.get_display_name }}</th>
+                    <th>{{ meeting_stakeholder.profile.get_display_name }}</th>
                   {% endfor %}
                   <th>Group Opinion</th>
                 </tr>

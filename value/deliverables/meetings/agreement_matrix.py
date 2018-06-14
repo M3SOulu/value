@@ -1,6 +1,8 @@
 import itertools
 import operator
 
+from django.contrib.auth.models import User
+
 from colour import Color
 
 from value.deliverables.meetings.utils import get_votes_percentage
@@ -11,9 +13,10 @@ class StakeholdersAgreement(object):
     def __init__(self, meeting, group_measures=False):
         self.group_measures = group_measures
         self.meeting = meeting
-        self.meeting_stakeholders = meeting.meetingstakeholder_set \
-            .select_related('stakeholder', 'stakeholder__profile') \
-            .order_by('stakeholder__first_name', 'stakeholder__last_name', 'stakeholder__username')
+        stakeholders_ids = meeting.get_evaluations().values_list('user', flat=True).distinct()
+        self.meeting_stakeholders = User.objects.filter(pk__in=stakeholders_ids) \
+            .select_related('profile') \
+            .order_by('first_name', 'last_name', 'username')
         self.meeting_items = meeting.meetingitem_set \
             .select_related('decision_item') \
             .order_by('decision_item__name')
@@ -78,12 +81,12 @@ class StakeholdersAgreement(object):
         ''' Initialize the dataset, adding a default of 0 to all evaluations '''
         dataset = dict()
         for ms in self.meeting_stakeholders:
-            dataset[ms.stakeholder.pk] = dict()
+            dataset[ms.pk] = dict()
             for mi in self.meeting_items:
-                dataset[ms.stakeholder.pk][mi.pk] = list()
+                dataset[ms.pk][mi.pk] = list()
                 for mf in meeting_factors:
                     # set 0 as a invalid id for measure value, and 99 as a very high order, so to have least priority
-                    dataset[ms.stakeholder.pk][mi.pk].append((0, 99))
+                    dataset[ms.pk][mi.pk].append((0, 99))
 
         ''' Create a lookup for the value factors, for fast access '''
         factors_lookup = dict()
@@ -178,8 +181,8 @@ class StakeholdersAgreement(object):
         for mi in self.meeting_items:
             meeting_item_row = (mi, list())
             for ms in self.meeting_stakeholders:
-                winner = self.dataset[ms.stakeholder.pk][mi.pk][0]
-                votes = self.dataset[ms.stakeholder.pk][mi.pk][1]
+                winner = self.dataset[ms.pk][mi.pk][0]
+                votes = self.dataset[ms.pk][mi.pk][1]
                 winner_count = len(filter(lambda x: x[0] == winner, votes))
                 winner_percentage = get_votes_percentage(len(votes), winner_count)
                 meeting_item_row[1].append({
@@ -218,7 +221,7 @@ class StakeholdersAgreement(object):
                 agreement_sum = 0
                 for mi in self.meeting_items:
                     for i in factors_indexes:
-                        if self.dataset[ms_1.stakeholder.pk][mi.pk][1][i][0] == self.dataset[ms_2.stakeholder.pk][mi.pk][1][i][0]:
+                        if self.dataset[ms_1.pk][mi.pk][1][i][0] == self.dataset[ms_2.pk][mi.pk][1][i][0]:
                             agreement_sum += 1
                 # Translate the raw result into percentages
                 percentage_agreement_sum = get_votes_percentage(max_agreement, agreement_sum)
@@ -238,9 +241,9 @@ class StakeholdersAgreement(object):
             for ms_2 in self.meeting_stakeholders:
                 agreement_sum = 0
                 for mi in self.meeting_items:
-                    # The `self.dataset[ms_1.stakeholder.pk][mi.pk][0]` returns the most used measure value for a
+                    # The `self.dataset[ms_1.pk][mi.pk][0]` returns the most used measure value for a
                     # given item a given stakeholder evaluated
-                    if self.dataset[ms_1.stakeholder.pk][mi.pk][0] == self.dataset[ms_2.stakeholder.pk][mi.pk][0]:
+                    if self.dataset[ms_1.pk][mi.pk][0] == self.dataset[ms_2.pk][mi.pk][0]:
                         agreement_sum += 1
                 # Translate the raw result into percentages
                 percentage_agreement_sum = get_votes_percentage(max_agreement, agreement_sum)
