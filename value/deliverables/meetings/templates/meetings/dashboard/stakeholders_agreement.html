@@ -119,7 +119,8 @@
 
           <div class="panel panel-default panel-chart">
             <div class="panel-heading">{% trans "Stakeholders' Agreement Based on Each Value Factor" %}</div>
-            <table class="table table-bordered table-stakeholders-agreement"
+            <div class="table-responsive">
+                <table class="table table-bordered table-stakeholders-agreement"
                    {% if active_tab == 'raw' %}
                    data-remote="{% url 'deliverables:meetings:stakeholders_agreement_details_factors' meeting.deliverable.pk meeting.pk %}">
                    {% else %}
@@ -153,11 +154,13 @@
                 {% endfor %}
               </tbody>
             </table>
+            </div>
           </div>
 
           <div class="panel panel-default panel-chart">
             <div class="panel-heading">{% trans "Stakeholders' Agreement Based on the Overall Decision Item Evaluation" %}</div>
-            <table class="table table-bordered table-stakeholders-agreement">
+            <div class="table-responsive">
+                <table class="table table-bordered table-stakeholders-agreement">
               <thead>
                 <tr>
                   <th>&nbsp;</th>
@@ -181,6 +184,7 @@
                 {% endfor %}
               </tbody>
             </table>
+            </div>
           </div>
 
         </div>
