@@ -2,7 +2,7 @@ title: VALUE Documentation
 email: vitor.freitas@oulu.fi
 description: Documentation and release notes of the Value Tool
 baseurl: ""
-url: "http://docs.valueproject.fi"
+url: "https://docs.valueproject.fi"
 
 markdown: kramdown
 exclude:
