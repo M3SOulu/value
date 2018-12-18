@@ -50,7 +50,7 @@
       </form>
       <div class="panel panel-default">
         <div class="panel-body">
-          <a href="{% url 'deliverables:meetings:export_excel' meeting.deliverable.pk meeting.pk %}">{% trans 'Download meeting evaluation data' %}</a>
+          <a href="{% url 'deliverables:meetings:export_excel' meeting.deliverable.pk meeting.pk %}"><span class="fa fa-cloud-download"></span> {% trans 'Download meeting evaluation data' %}</a>
         </div>
       </div>
     </div>

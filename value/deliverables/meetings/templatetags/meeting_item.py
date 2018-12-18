@@ -1,12 +1,13 @@
 # coding: utf-8
 
 from django import template
+from django.db.models import Count, Sum
 from django.utils.html import mark_safe
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
 from value.deliverables.meetings.models import MeetingItem
-from value.deliverables.meetings.utils import format_percentage
+from value.deliverables.meetings.utils import format_percentage, get_votes_percentage
 
 register = template.Library()
 
@@ -21,7 +22,7 @@ def meeting_item(meeting_item_id):
 
 
 @register.simple_tag
-def display_evaluation_summary(instance):
+def display_evaluation_summary(meeting_item):
     html = u'''<div class="progress help-cursor"
                     style="margin-bottom: 0"
                     data-toggle="tooltip"
@@ -31,14 +32,21 @@ def display_evaluation_summary(instance):
         _('Decision&nbsp;Item&nbsp;Evaluation&nbsp;Summary')
     )
 
-    evaluation_summary = instance.evaluation_summary.all().select_related('measure_value')
+    evaluation_summary = meeting_item.evaluation_summary.select_related('measure_value')
+    total = evaluation_summary.aggregate(votes=Sum('raw_votes'))
+    control_total = 0.0
     for ranking in evaluation_summary:
+        percentage_votes = get_votes_percentage(total['votes'], ranking.raw_votes)
+        percentage_votes = round(percentage_votes, 2)
+        control_total += percentage_votes
+        if control_total > 100.0:
+            percentage_votes -= 0.01
         progress_bar = u'''<div class="progress-bar" style="width: {0}%; background-color: {1};">
           <span class="measure-percent" data-measure-id="{2}" data-percentage="{0}">{3}</span>%
-        </div>'''.format(ranking.percentage_votes,
+        </div>'''.format(percentage_votes,
                          ranking.measure_value.color,
                          ranking.measure_value.pk,
-                         ranking.get_percentage_votes_display())
+                         format_percentage(percentage_votes))
         html += progress_bar
 
     html += u'</div>'

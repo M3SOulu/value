@@ -67,6 +67,7 @@
             <thead>
               <tr>
                 <th>{% trans 'Stakeholder' %}</th>
+                <th>{% trans 'Group' %}</th>
                 <th>{% trans 'Meeting input' %}</th>
                 {% if not meeting.is_closed %}
                   <th></th>
@@ -85,6 +86,7 @@
                       <span class="label label-warning">{% trans 'manager' %}</span>
                     {% endif %}
                   </td>
+                  <td>{{ stakeholder.stakeholder.profile.get_display_roles }}</td>
                   <td>{{ stakeholder.meeting_input }}%</td>
                   {% if not meeting.is_closed %}
                     <td>
